@@ -1,134 +1,144 @@
-#include <FastLED.h>
-#include "turnLedON.h"
 
-//Define the pins where the relay modules are connected
-const int relayPins[] = {2, 3, 4, 5, 6, 7}; //Green - White - Blue - Red - Black
-#define numRelays 6
+/***********************************************
+Title: Wire connectivity and Pinning Test Kit  
+Author: Franco Nepomuceno                      
+Date: 12/11/2024                               
+Rev: Draft                                     
+***********************************************/
+#include <LiquidCrystal_I2C.h>
+#include <Keypad.h>
+#include <Wire.h>
+#include "KeyPadControl.h"
+#include "MIC_Connector.h"
+#include "wireSelection.h"
+char* wireSelectInput;
+int WSint = 0;
 
-//Define LED Parameters
-#define numLeds 2   //CP TX1818 12V
-#define DATA_PIN_1 8
-#define DATA_PIN_2 9
-#define DATA_PIN_3 10
-#define DATA_PIN_4 11
-#define DATA_PIN_5 12
-#define DATA_PIN_6 13
+LiquidCrystal_I2C lcd(0x27, 20, 4);   // Set the LCD address to 0x3F for 16 chars
 
-CRGB leds1[numLeds];
-CRGB leds2[numLeds];
-CRGB leds3[numLeds];
-CRGB leds4[numLeds];
-CRGB leds5[numLeds];
-CRGB leds6[numLeds];
+/*********************
+Pin1: D2
+Pin2: D3 (Green)
+Pin3: D4
+********
+Pin4: D5
+Pin5: D6 (Red)
+Pin6: D7 (Black)
+********
+//Combination
+D2(Pin1) -> D7(Pin6)
+D5(Pin4) -> D3(Pin2) 
+D4(Pin3) -> D6(Pin5) 
+**********************/
+
+const int txPins[] = {2, 4, 5};     // TX pins (connected to active connector pins)
+const int rxPins[] = {7, 6, 3};     // RX pins (expected loopback pins)
+const int ledPins[] = {8, 9, 10};   // Indicator pins to set HIGH on connection acquired
+int ledState[3] = {}; 
+
 
 
 void setup() {
-  for (int i = 0; i <= numRelays; i++){
-    pinMode(relayPins[i], OUTPUT);    //Initialize each relay pin as output
-    digitalWrite(relayPins[i], HIGH);  //All relays are turned off
-  }
-    FastLED.addLeds<WS2811, DATA_PIN_1, RGB>(leds1, numLeds);
-    FastLED.addLeds<WS2811, DATA_PIN_2, RGB>(leds2, numLeds);
-    FastLED.addLeds<WS2811, DATA_PIN_3, RGB>(leds3, numLeds);
-    FastLED.addLeds<WS2811, DATA_PIN_4, RGB>(leds4, numLeds);
-    FastLED.addLeds<WS2811, DATA_PIN_5, RGB>(leds5, numLeds);
-    FastLED.addLeds<WS2811, DATA_PIN_6, RGB>(leds6, numLeds);
 
-    FastLED.clear();
-    FastLED.show();
-    delay(1500);
-    for (int i = 0; i < numLeds; i++){
-      leds1[i] = CRGB::Black;
-      leds2[i] = CRGB::Black;
-      leds3[i] = CRGB::Black;
-      leds4[i] = CRGB::Black;
-      leds5[i] = CRGB::Black;
-      leds6[i] = CRGB::Black;
-    }
-    FastLED.show(); 
-    delay(5000);
+  lcd.init();           // Initialize the LCD
+  lcd.backlight();      // Turn on the backlight
 
-    FastLED.clear();
-    FastLED.show();
-    delay(1500);
-
-    leds2[0] = CRGB::White;
-    FastLED.show(); 
-    delay(500);
-
-    leds3[0] = CRGB::White;
-    FastLED.show(); 
-    delay(500);
-
-    leds4[0] = CRGB::White;
-    FastLED.show(); 
-    delay(500);
-
-    leds5[0] = CRGB::White;
-    FastLED.show(); 
-    delay(500);
-
-    leds6[0] = CRGB::White;
-    FastLED.show(); 
-    delay(1500);
-    
-}
+  // Start Serial and set-up --> Welcome Screen
+  Serial.begin(9600);
+  lcd.clear();
+  lcd.setCursor(3, 1);                                  //LCD --> (COLUMN, ROW)
+  lcd.print("Welcome to the");
+  lcd.setCursor(3, 2);
+  lcd.print("Wire Test Kit");
+  lcd.setCursor(8, 3);
+  lcd.print("Rev A");                                   //Change if revised
+  delay(6000);
+  lcd.clear();
   
-void loop() {
-  for (int i = 0; i < numRelays; i++){
-    digitalWrite(relayPins[i], LOW); //Activate relay
+  // Set RX pins as INPUT
+  for (int i = 0; i < 3; i++) {
+      pinMode(rxPins[i], INPUT);
   }
-  //Pin 1 of UUT
-  for (int i = 0; i < numLeds; i++) {
-  leds1[i] = CRGB::Green;
-  }
-  FastLED.show();
-  delay(500);
 
-  //Pin 2 of UUT
-  for (int i = 0; i < numLeds; i++) {
-  leds2[i] = CRGB::Green;
+  // Set TX pins as OUTPUT
+  for (int i = 0; i < 3; i++) {
+      pinMode(txPins[i], OUTPUT);
+      pinMode(ledPins[i], OUTPUT);
+      digitalWrite(txPins[i], LOW);  // Start with LEDs OFF
+      digitalWrite(ledPins[i], LOW);
   }
-  FastLED.show();
-  delay(500);
-
-  //Pin 3 of UUT
-  for (int i = 0; i < numLeds; i++) {
-  leds3[i] = CRGB::Green;
-  }
-  FastLED.show();
-  delay(500);
-
-  //Pin 4 of UUT
-  for (int i = 0; i < numLeds; i++) {
-  leds4[i] = CRGB::Green;
-  }
-  FastLED.show();
-  delay(500);
-
-  //Pin 5 of UUT
-  for (int i = 0; i < numLeds; i++) {
-  leds5[i] = CRGB::Green;
-  } 
-  FastLED.show();
-  delay(500);
-
-  //Pin 6 of UUT
-  for (int i = 0; i < numLeds; i++) {
-  leds6[i] = CRGB::Green;
-  }
-  FastLED.show();
-  delay(3500);
-
-  for (int i = 0; i < numLeds; i++){
-    leds1[i] = CRGB::Black;
-    leds2[i] = CRGB::Black;
-    leds3[i] = CRGB::Black;
-    leds4[i] = CRGB::Black;
-    leds5[i] = CRGB::Black;
-    leds6[i] = CRGB::Black;
-  }
-  FastLED.show();
-  delay(10000);
+  
+  selection_1(); // Show user directions
+  delay(250);
+  selection_2(); // Show choices to user
+  wireSelectInput = keypadWireSelect(); // Process user input
+  WSint = atoi(wireSelectInput); // Converts string from keypad into integer
 
 }
+
+void loop() 
+
+    for (int i = 0; i < 3; i++){
+      digitalWrite(ledPins[i], LOW); //Reset - all LEDs OFF
+      digitalWrite(rxPins[i], LOW); //Reset - all RX pins LOW
+      digitalWrite(txPins[i], LOW); //Reset - all TX pins LOW
+     }
+     delay(75);
+
+    // //Testing TX PINS -- Manually
+    // digitalWrite(txPins[1], HIGH);
+
+    //Make TX PINs HIGH 
+    for (int i = 0; i < 3; i++) {
+      digitalWrite(txPins[i], HIGH); //Turn all TX Pins to HIGH - Pin 2, 4, 5
+    }
+    delay(100);  // Small delay to reduce CPU usage
+
+    // // Testing -- LEDs right to left 8, 9 10 visually -- Look at the LEDs 
+    // for (int i = 0; i < 3; i++) {
+    // digitalWrite(ledPins[i], HIGH);
+    // delay(500);
+    // digitalWrite(ledPins[i], LOW);
+    // delay(500);
+    // }
+
+    //Testing RX Pins
+    for (int i = 0; i < 3; i++)
+    {
+    digitalWrite(rxPins[i], HIGH)
+    }
+  
+  //Read if RX PINs are HIGH - Turn the LEDs ON
+    for (int i = 0; i < 3; i++)
+    {
+      if (digitalRead(rxPins[i]) == HIGH) // Pins 7, 6, 3 
+      {
+        digitalWrite(ledPins[i], HIGH); // Pins 8, 9, 10 
+        delay(1000);
+      }
+      else
+      {
+      digitalWrite(ledPins[i], LOW); // Pins 8, 9, 10
+      delay(500);
+      }
+    }
+    delay(50);
+
+    memset(ledState, 0, sizeof(ledState)); // Zero out all elements
+    
+    for (int i = 0; i < 3; i++){
+      if (digitalRead(ledPins[i]) == HIGH)
+      {
+        ledState[i] = 1;
+        delay(50);
+      }
+      else
+      {
+        ledState[i] = 0;
+        delay(50);
+      }
+    }
+    checkvalue6wire(ledState);
+}
+
+
