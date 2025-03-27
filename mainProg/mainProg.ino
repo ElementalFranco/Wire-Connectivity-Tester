@@ -36,12 +36,10 @@ const int rxPins[] = {7, 6, 3};     // RX pins (expected loopback pins)
 const int ledPins[] = {8, 9, 10};   // Indicator pins to set HIGH on connection acquired
 int ledState[3] = {}; 
 
-
-
 void setup() {
 
-  lcd.init();           // Initialize the LCD
-  lcd.backlight();      // Turn on the backlight
+  lcd.init();                                           // Initialize the LCD
+  lcd.backlight();                                      // Turn on the backlight
 
   // Start Serial and set-up --> Welcome Screen
   Serial.begin(9600);
@@ -71,13 +69,13 @@ void setup() {
   selection_1(); // Show user directions
   delay(250);
   selection_2(); // Show choices to user
-  wireSelectInput = keypadWireSelect(); // Process user input
+  wireSelectInput = processKeypad(); // Process user input
   WSint = atoi(wireSelectInput); // Converts string from keypad into integer
 
 }
 
 void loop() 
-
+{
     for (int i = 0; i < 3; i++){
       digitalWrite(ledPins[i], LOW); //Reset - all LEDs OFF
       digitalWrite(rxPins[i], LOW); //Reset - all RX pins LOW
@@ -103,9 +101,8 @@ void loop()
     // }
 
     //Testing RX Pins
-    for (int i = 0; i < 3; i++)
-    {
-    digitalWrite(rxPins[i], HIGH)
+    for (int i = 0; i < 3; i++){
+    digitalWrite(rxPins[i], HIGH);
     }
   
   //Read if RX PINs are HIGH - Turn the LEDs ON

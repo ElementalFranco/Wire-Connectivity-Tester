@@ -1,7 +1,7 @@
 #include <Keypad.h>
 #include <LiquidCrystal_I2C.h>
 
-extern LiquidCrystal_I2C lcd;
+extern LiquidCrystal_I2C lcd;//mainProg 
 
 // Keypad setup
 const byte ROWS = 4; // 4 rows
@@ -37,7 +37,7 @@ void initKeypadLCD() {
   lcd.setCursor(0, 1);
 }
 
-char* keypadWireSelect() 
+char* processKeypad() 
 {
   digitCount = 0;                                        //Number of digits pressed by user
   lcd.setCursor(16, 3);                                   //LCD --> (COLUMN, ROW)
@@ -51,7 +51,7 @@ char* keypadWireSelect()
         // If a digit is pressed and we haven't reached 2 digits
         if ( digitCount < 3) {
           user_input[digitCount] = customKey;            // Store the digit in user_input
-          lcd.setCursor(9 + digitCount, 3);              // Move the cursor based on the digits
+          lcd.setCursor(15 + digitCount, 3);              // Move the cursor based on the digits
           digitCount++;                                  // Move to the next position
           lcd.print(customKey);                         // Show the digit as it's typed
 
@@ -79,3 +79,4 @@ char* keypadWireSelect()
       }
     }
   }
+}

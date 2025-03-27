@@ -1,12 +1,12 @@
-/*Add wire type in the future*/
+#ifndef WIRE_SELECTION_H
+#define WIRE_SELECTION_H
 
-#include <wire.h>
+#include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
-extern LiquidCrystal_I2C lcd; //Use existing LCD object from mainProg
+extern LiquidCrystal_I2C lcd;//mainProg 
 
-void selection_1()
-{
+void selection_1() {
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("How many pins");
@@ -19,8 +19,7 @@ void selection_1()
   delay(1500);
 }
 
-void selection_2()
-{
+void selection_2() {
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("1: 6 connected");
@@ -32,3 +31,4 @@ void selection_2()
   lcd.print("Select [1-3]");
 }
 
+#endif
