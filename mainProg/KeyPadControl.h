@@ -1,3 +1,6 @@
+#ifndef KEYPADCONTROL_H
+#define KEYPADCONTROL_H
+
 #include <Keypad.h>
 #include <LiquidCrystal_I2C.h>
 
@@ -40,7 +43,7 @@ void initKeypadLCD() {
 char* processKeypad() 
 {
   digitCount = 0;                                        //Number of digits pressed by user
-  lcd.setCursor(16, 3);                                   //LCD --> (COLUMN, ROW)
+  lcd.setCursor(18, 3);                                   //LCD --> (COLUMN, ROW)
   
 
   while (true) {
@@ -51,7 +54,7 @@ char* processKeypad()
         // If a digit is pressed and we haven't reached 2 digits
         if ( digitCount < 3) {
           user_input[digitCount] = customKey;            // Store the digit in user_input
-          lcd.setCursor(15 + digitCount, 3);              // Move the cursor based on the digits
+          lcd.setCursor(18 + digitCount, 3);              // Move the cursor based on the digits
           digitCount++;                                  // Move to the next position
           lcd.print(customKey);                         // Show the digit as it's typed
 
@@ -72,11 +75,13 @@ char* processKeypad()
           user_input[digitCount] = '\0';               // Null out the last character
           
           // Update the LCD to reflect the change
-          lcd.setCursor(9 + digitCount, 3);        // Set the cursor at the right position
+          lcd.setCursor(18 + digitCount, 3);        // Set the cursor at the right position
           lcd.print(" ");                          // Clear the last character on the LCD
-          lcd.setCursor(9 + digitCount, 3);       // Move cursor back to the cleared position
+          lcd.setCursor(18 + digitCount, 3);       // Move cursor back to the cleared position
         }
       }
     }
   }
 }
+
+#endif

@@ -22,13 +22,23 @@ void selection_1() {
 void selection_2() {
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("1: 6 connected");
+  lcd.print("1: 5-Wire RGBW");
   lcd.setCursor(0, 1);
-  lcd.print("2: 5 connected");
+  lcd.print("2: 4-Wire -->");
   lcd.setCursor(0, 2);
-  lcd.print("3: 4 connected");
+  lcd.print("3: 3-Wire TW");
   lcd.setCursor(0, 3);
-  lcd.print("Select [1-3]");
+  lcd.print("Slct [1-3] & '#'");
+}
+
+void RGB4WireSelect() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("1: Standard");
+  lcd.setCursor(0, 1);
+  lcd.print("2: KIOSK(FutureRev)");
+  lcd.setCursor(0, 2);
+  lcd.print("Slct [1-2] & '#'");
 }
 
 #endif

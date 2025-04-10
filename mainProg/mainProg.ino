@@ -13,8 +13,9 @@ Rev: Draft
 #include "wireSelection.h"
 char* wireSelectInput;
 int WSint = 0;
+int WSint_2 = 0;
 
-LiquidCrystal_I2C lcd(0x27, 20, 4);   // Set the LCD address to 0x3F for 16 chars
+LiquidCrystal_I2C lcd(0x27, 20, 4);   // Set the LCD address to 0x3F for 20 chars
 
 /*********************
 Pin1: D2
@@ -67,11 +68,17 @@ void setup() {
   }
   
   selection_1(); // Show user directions
-  delay(250);
+  delay(500);
   selection_2(); // Show choices to user
   wireSelectInput = processKeypad(); // Process user input
   WSint = atoi(wireSelectInput); // Converts string from keypad into integer
 
+  if (WSint == 2) // look at the wireSelection header file for types of 4 wire
+  {
+    RGB4WireSelect();
+    wireSelectInput = processKeypad(); // Process user input
+    WSint_2 = atoi(wireSelectInput); // Converts string from keypad into integer
+  }
 }
 
 void loop() 
@@ -90,7 +97,7 @@ void loop()
     for (int i = 0; i < 3; i++) {
       digitalWrite(txPins[i], HIGH); //Turn all TX Pins to HIGH - Pin 2, 4, 5
     }
-    delay(100);  // Small delay to reduce CPU usage
+    delay(50);  // Small delay to reduce CPU usage
 
     // // Testing -- LEDs right to left 8, 9 10 visually -- Look at the LEDs 
     // for (int i = 0; i < 3; i++) {
@@ -100,10 +107,10 @@ void loop()
     // delay(500);
     // }
 
-    //Testing RX Pins
-    for (int i = 0; i < 3; i++){
-    digitalWrite(rxPins[i], HIGH);
-    }
+    // //Testing RX Pins -- Manually
+    // for (int i = 0; i < 3; i++){
+    // digitalWrite(rxPins[i], HIGH);
+    // }
   
   //Read if RX PINs are HIGH - Turn the LEDs ON
     for (int i = 0; i < 3; i++)
@@ -122,7 +129,13 @@ void loop()
     delay(50);
 
     memset(ledState, 0, sizeof(ledState)); // Zero out all elements
-    
+
+    /* Array of LED state -- 0: OFF | 1: ON  */
+    /* ledState = {#, #, #}                  */
+    /* ledPins = {D8, D9, D10}               */
+    /* rxPins = {D7(Pin6), D6(Pin5), D3(Pin2)}  */
+    /* txPins = {D2(Pin1), D4(Pin3), D5(Pin4)}  */
+
     for (int i = 0; i < 3; i++){
       if (digitalRead(ledPins[i]) == HIGH)
       {
@@ -135,7 +148,39 @@ void loop()
         delay(50);
       }
     }
-    checkvalue6wire(ledState);
+
+    switch(WSint){
+      case 1: 
+        RGBW_5wire(ledState);
+        break;
+
+      case 2:
+        if (WSint_2 == 1)
+        {
+          RGB_4Std();
+        }
+        else
+        {
+          //Future Update
+          RGB_4Kiosk(ledState);
+        }
+      break;
+
+      case 3: 
+        TW_3Wire(ledState);
+        break;
+
+      default:
+        lcd.clear();
+        lcd.setCursor(0, 1);
+        lcd.print("Wrong button!!");
+        lcd.setCursor(0, 2);
+        lcd.print("OMG! Restarting...");
+        delay(1500);
+        asm volatile("jmp 0"); //Soft restart
+    }
+
+    
 }
 
 
