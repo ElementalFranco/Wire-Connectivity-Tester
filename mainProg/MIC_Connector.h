@@ -8,6 +8,7 @@
 #include "KeyPadControl.h"
 char* userResponse;
 int userResponseInt = 0;
+int userResponseInt2= 0;
 
 extern LiquidCrystal_I2C lcd; //mainProg 
 
@@ -29,36 +30,36 @@ void RGBW_5wire(int state[]) {
     lcd.print("Ok! Next..");
     delay(500);
     lcd.setCursor(3, 2);
-    lcd.print("Is pin1 empty?");
+    lcd.print("Is Pin1 empty?");
     lcd.setCursor(4, 3);
     lcd.print("1-Yes | 2-No");
     userResponse = processKeypad(); // Process user input
-    userResponseInt = atoi(userResponse); // Converts string from keypad into integer
-    if (userResponseInt == 1)
+    userResponseInt2 = atoi(userResponse); // Converts string from keypad into integer
+    if (userResponseInt2 == 1)
     {
       lcd.clear();
       lcd.setCursor(0, 1);
-      lcd.print("oh Yeah! Wait...");
+      lcd.print("Ok! Wait...");
       lcd.setCursor(0, 2);
       lcd.print("Im checking..");
       delay(1500);
     }
-    else if (userResponseInt == 2)
+    else if (userResponseInt2 == 2)
     {
       lcd.clear();
       lcd.setCursor(0, 1);
       lcd.print("Ayy! Recheck Pin5");
       lcd.setCursor(0, 2);
-      lcd.print("Fix your cable!");
+      lcd.print("Waiting..5sec");
       delay(5000);
       lcd.clear();
       lcd.setCursor(3, 2);
-      lcd.print("Is pin1 empty?");
+      lcd.print("Is Pin1 empty?");
       lcd.setCursor(4, 3);
       lcd.print("1-Yes | 2-No");
       userResponse = processKeypad(); // Process user input
-      userResponseInt = atoi(userResponse); // Converts string from keypad into integer
-      switch (userResponseInt){
+      userResponseInt2 = atoi(userResponse); // Converts string from keypad into integer
+      switch (userResponseInt2){
         case 1: 
         lcd.clear();
         lcd.setCursor(0, 1);
@@ -72,10 +73,10 @@ void RGBW_5wire(int state[]) {
         lcd.print("Again? Grrr");
         lcd.setCursor(0, 2);
         lcd.print("Restarting...");
-        delay(1500);
+        delay(3000);
         asm volatile("jmp 0"); //Soft restart
 
-        case 3: 
+        default: 
         lcd.clear();
         lcd.setCursor(0, 1);
         lcd.print("Pressed the ");
@@ -83,23 +84,36 @@ void RGBW_5wire(int state[]) {
         lcd.print("wrong button!!");
         lcd.setCursor(0, 3);
         lcd.print("Restarting..");
-        delay(1500);
+        delay(3000);
         asm volatile("jmp 0"); //Soft restart
       }
     }
-  else if (userResponse == 2)
+    else
+    {
+      lcd.clear();
+      lcd.setCursor(0, 1);
+      lcd.print("Wrong button_1");
+      lcd.setCursor(0, 2);
+      lcd.print("my friend!");
+      lcd.setCursor(0, 3);
+      lcd.print("Restarting..");
+      delay(3000);
+      asm volatile("jmp 0"); //Soft restart
+    }
+  }  
+  else if(userResponseInt == 2)
   {
     lcd.clear();
     lcd.setCursor(0, 1);
     lcd.print("Fix it then!");
-    delay(5000);
+    delay(2000);
     lcd.setCursor(3, 2);
-    lcd.print("Is pin1 empty?");
+    lcd.print("Is Pin1 empty?");
     lcd.setCursor(4, 3);
     lcd.print("1-Yes | 2-No");
     userResponse = processKeypad(); // Process user input
-    userResponseInt = atoi(userResponse); // Converts string from keypad into integer
-        switch (userResponseInt){
+    userResponseInt2 = atoi(userResponse); // Converts string from keypad into integer
+      switch (userResponseInt2){
         case 1: 
         lcd.clear();
         lcd.setCursor(0, 1);
@@ -113,10 +127,10 @@ void RGBW_5wire(int state[]) {
         lcd.print("Call Franco! JK");
         lcd.setCursor(0, 2);
         lcd.print("Restarting...");
-        delay(1500);
+        delay(3000);
         asm volatile("jmp 0"); //Soft restart
 
-        case 3: 
+        default: 
         lcd.clear();
         lcd.setCursor(0, 1);
         lcd.print("No bueno");
@@ -124,23 +138,23 @@ void RGBW_5wire(int state[]) {
         lcd.print("my friend!");
         lcd.setCursor(0, 3);
         lcd.print("Restarting..");
-        delay(1500);
+        delay(3000);
         asm volatile("jmp 0"); //Soft restart
-        }
-    }
-    else
-    {
-      lcd.clear();
-      lcd.setCursor(0, 1);
-      lcd.print("Wrong button");
-      lcd.setCursor(0, 2);
-      lcd.print("my friend!");
-      lcd.setCursor(0, 3);
-      lcd.print("Restarting..");
-      delay(1500);
-      asm volatile("jmp 0"); //Soft restart
-    }
-  delay(2500);
+      }
+  }
+  else
+  {
+    lcd.clear();
+    lcd.setCursor(0, 1);
+    lcd.print("Wrong button");
+    lcd.setCursor(0, 2);
+    lcd.print("my friend!");
+    lcd.setCursor(0, 3);
+    lcd.print("Restarting..");
+    delay(3000);
+    asm volatile("jmp 0"); //Soft restart
+  }
+  delay(1000);
 
     /* Array of LED state -- 0: OFF | 1: ON  */
     /* ledState = {#, #, #}                  */
@@ -160,22 +174,38 @@ void RGBW_5wire(int state[]) {
     lcd.clear();
     lcd.setCursor(0, 1);
     lcd.print("Check pin 1 or pin 6");
+    lcd.setCursor(0, 2);
+    lcd.print("Restarting...");
+    delay(2000);
+    asm volatile("jmp 0"); //Soft restart
   } else if (state[0] == 0 && state[1] == 0 && state[2] == 1) {
     lcd.clear();
     lcd.setCursor(0, 1);
     lcd.print("Check pin 5 or pin 3");
+    lcd.setCursor(0, 2);
+    lcd.print("Restarting...");
+    delay(2000);
+    asm volatile("jmp 0"); //Soft restart
   } else if (state[0] == 0 && state[1] == 1 && state[2] == 0) {
     lcd.clear();
     lcd.setCursor(0, 1);
     lcd.print("Check pin 2 or pin 4");
+    lcd.setCursor(0, 2);
+    lcd.print("Restarting...");
+    delay(2000);
+    asm volatile("jmp 0"); //Soft restart
   } else {
     lcd.clear();
     lcd.setCursor(0, 1);
     lcd.print("Check all wires");
+    lcd.setCursor(0, 2);
+    lcd.print("Restarting...");
+    delay(2000);
+    asm volatile("jmp 0"); //Soft restart
   }
   delay(3000);
 }
-}
+
 
 void RGB_4Std() 
 {
@@ -232,7 +262,7 @@ void RGB_4Std()
   {
     lcd.clear();
     lcd.setCursor(0, 1);
-    lcd.print("Great! Will see!!");
+    lcd.print("Great! Checking..");
     delay(1000);
 
     //Testing LEDs
@@ -271,12 +301,22 @@ void RGB_4Std()
     }
 
   }
-  else
+  else if(userResponseInt == 2)
   {
     lcd.clear();
     lcd.setCursor(0, 1);
     lcd.print("Ayy! Recheck Pin");
     delay(500);
+    lcd.setCursor(0, 2);
+    lcd.print("Restarting again");
+    delay(5000);
+    asm volatile("jmp 0"); //Soft restart
+  }
+  else
+  {
+    lcd.clear();
+    lcd.setCursor(0, 1);
+    lcd.print("Wrong button!");
     lcd.setCursor(0, 2);
     lcd.print("Restarting again");
     delay(5000);
@@ -353,9 +393,11 @@ void TW_3Wire(int state[])
     lcd.clear();
     lcd.setCursor(0, 1);
     lcd.print("Pin5 Connected");
+    lcd.setCursor(0, 2);
+    lcd.print("Checking..");
     delay(1500);
   }
-  else
+  else if(userResponseInt == 2)
   {
     lcd.clear();
     lcd.setCursor(0, 1);
@@ -363,7 +405,18 @@ void TW_3Wire(int state[])
     delay(1500);
     lcd.setCursor(0, 2);
     lcd.print("Restarting again");
-    delay(1500);
+    delay(3000);
+    asm volatile("jmp 0"); //Soft restart
+  }
+  else
+  {
+    lcd.clear();
+    lcd.setCursor(0, 1);
+    lcd.print("Ay Wrong button!");
+    delay(500);
+    lcd.setCursor(0, 2);
+    lcd.print("Restarting again");
+    delay(3000);
     asm volatile("jmp 0"); //Soft restart
   }
   

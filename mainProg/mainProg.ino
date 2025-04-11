@@ -3,7 +3,7 @@
 Title: Wire connectivity and Pinning Test Kit  
 Author: Franco Nepomuceno                      
 Date: 12/11/2024                               
-Rev: Draft                                     
+Rev: A                                    
 ***********************************************/
 #include <LiquidCrystal_I2C.h>
 #include <Keypad.h>
@@ -158,14 +158,14 @@ void loop()
         if (WSint_2 == 1)
         {
           RGB_4Std();
+          break;
         }
         else
         {
           //Future Update
           RGB_4Kiosk(ledState);
+          break;
         }
-      break;
-
       case 3: 
         TW_3Wire(ledState);
         break;
@@ -176,7 +176,7 @@ void loop()
         lcd.print("Wrong button!!");
         lcd.setCursor(0, 2);
         lcd.print("OMG! Restarting...");
-        delay(1500);
+        delay(3000);
         asm volatile("jmp 0"); //Soft restart
     }
 
