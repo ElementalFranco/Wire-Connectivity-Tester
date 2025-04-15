@@ -176,7 +176,7 @@ void RGBW_5wire(int state[]) {
     lcd.print("Check pin 1 or pin 6");
     lcd.setCursor(0, 2);
     lcd.print("Restarting...");
-    delay(2000);
+    delay(3000);
     asm volatile("jmp 0"); //Soft restart
   } else if (state[0] == 0 && state[1] == 0 && state[2] == 1) {
     lcd.clear();
@@ -184,7 +184,7 @@ void RGBW_5wire(int state[]) {
     lcd.print("Check pin 5 or pin 3");
     lcd.setCursor(0, 2);
     lcd.print("Restarting...");
-    delay(2000);
+    delay(3000);
     asm volatile("jmp 0"); //Soft restart
   } else if (state[0] == 0 && state[1] == 1 && state[2] == 0) {
     lcd.clear();
@@ -192,7 +192,7 @@ void RGBW_5wire(int state[]) {
     lcd.print("Check pin 2 or pin 4");
     lcd.setCursor(0, 2);
     lcd.print("Restarting...");
-    delay(2000);
+    delay(3000);
     asm volatile("jmp 0"); //Soft restart
   } else {
     lcd.clear();
@@ -200,7 +200,7 @@ void RGBW_5wire(int state[]) {
     lcd.print("Check all wires");
     lcd.setCursor(0, 2);
     lcd.print("Restarting...");
-    delay(2000);
+    delay(3000);
     asm volatile("jmp 0"); //Soft restart
   }
   delay(3000);
@@ -355,7 +355,7 @@ void RGB_4Std()
     lcd.clear();
     lcd.setCursor(0, 1);
     lcd.print("Chk pin 1&3 or 4&2");
-    delay(1500);
+    delay(3000);
   } else {
     lcd.clear();
     lcd.setCursor(0, 1);
@@ -373,7 +373,7 @@ void RGB_4Kiosk(int state[])
   lcd.print("Nothing yet!");
   lcd.setCursor(1, 2);
   lcd.print("Restarting... bye!");
-  delay(2000);
+  delay(3000);
   asm volatile("jmp 0"); //Soft restart
 }
 
@@ -440,14 +440,17 @@ void TW_3Wire(int state[])
     lcd.clear();
     lcd.setCursor(0, 1);
     lcd.print("Check pin 5");
+    delay(3000);
   } else if (state[0] == 0 && state[1] == 0 && state[2] == 0) {
     lcd.clear();
     lcd.setCursor(0, 1);
     lcd.print("Check pin 4 or pin 6");
+    delay(3000);
   } else {
     lcd.clear();
     lcd.setCursor(0, 1);
     lcd.print("Check the entire wire assembly");
+    delay(3000);
   }
 }
 

@@ -47,8 +47,8 @@ void setup() {
   lcd.clear();
   lcd.setCursor(3, 1);                                  //LCD --> (COLUMN, ROW)
   lcd.print("Welcome to the");
-  lcd.setCursor(3, 2);
-  lcd.print("Wire Test Kit");
+  lcd.setCursor(2, 2);
+  lcd.print("MIC Ext Test Kit");
   lcd.setCursor(8, 3);
   lcd.print("Rev A");                                   //Change if revised
   delay(6000);
