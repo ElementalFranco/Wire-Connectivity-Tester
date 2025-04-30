@@ -2,8 +2,8 @@
 /***********************************************
 Title: Wire connectivity and Pinning Test Kit  
 Author: Franco Nepomuceno                      
-Date: 12/11/2024                               
-Rev: A                                    
+Date: 04/28/2025                               
+Rev: A.1                                    
 ***********************************************/
 #include <LiquidCrystal_I2C.h>
 #include <Keypad.h>
@@ -49,8 +49,8 @@ void setup() {
   lcd.print("Welcome to the");
   lcd.setCursor(2, 2);
   lcd.print("MIC Ext Test Kit");
-  lcd.setCursor(8, 3);
-  lcd.print("Rev A");                                   //Change if revised
+  lcd.setCursor(7, 3);
+  lcd.print("Rev A.1");                                   //Change if revised
   delay(6000);
   lcd.clear();
   
@@ -78,6 +78,12 @@ void setup() {
     RGB4WireSelect();
     wireSelectInput = processKeypad(); // Process user input
     WSint_2 = atoi(wireSelectInput); // Converts string from keypad into integer
+  }
+  else if (WSint == 3) //Next page
+  {
+    selection_3();
+    wireSelectInput = processKeypad(); // Process user input
+    WSint = atoi(wireSelectInput); // Converts string from keypad into integer
   }
 }
 
@@ -168,6 +174,10 @@ void loop()
         }
       case 3: 
         TW_3Wire(ledState);
+        break;
+
+      case 5: 
+        MIC_2Pin();
         break;
 
       default:

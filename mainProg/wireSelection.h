@@ -26,8 +26,18 @@ void selection_2() {
   lcd.setCursor(0, 1);
   lcd.print("2: 4-Wire -->");
   lcd.setCursor(0, 2);
-  lcd.print("3: 3-Wire TW");
+  lcd.print("3: Next Page");
   lcd.setCursor(0, 3);
+  lcd.print("Slct [1-3] & '#'");
+}
+
+void selection_3(){
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("4: 3-Wire TW");
+  lcd.setCursor(0, 1);
+  lcd.print("5: 2-Wire MIC");
+  lcd.setCursor(0, 2);
   lcd.print("Slct [1-3] & '#'");
 }
 

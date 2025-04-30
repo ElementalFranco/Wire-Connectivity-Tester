@@ -454,4 +454,145 @@ void TW_3Wire(int state[])
   }
 }
 
+void MIC_2Pin()
+{
+  const int txPins[] = {2, 4, 5};     // TX pins (connected to active connector pins)
+  const int rxPins[] = {7, 6, 3};     // RX pins (expected loopback pins)
+  const int ledPins[] = {8, 9, 10};   // Indicator pins to set HIGH on connection acquired
+  int ledState[3] = {}; 
+
+  // Set RX pins as INPUT
+  for (int i = 0; i < 3; i++) {
+      pinMode(rxPins[i], INPUT);
+  }
+
+  // Set TX pins as OUTPUT
+  for (int i = 0; i < 3; i++) {
+      pinMode(txPins[i], OUTPUT);
+      pinMode(ledPins[i], OUTPUT);
+      digitalWrite(txPins[i], LOW);  // Start with LEDs OFF
+      digitalWrite(ledPins[i], LOW);
+  }
+
+  for (int i = 0; i < 3; i++){
+    digitalWrite(ledPins[i], LOW); //Reset - all LEDs OFF
+    digitalWrite(rxPins[i], LOW); //Reset - all RX pins LOW
+    digitalWrite(txPins[i], HIGH); //Reset - all TX pins LOW
+  }
+  delay(75);
+
+
+    /* Array of LED state -- 0: OFF | 1: ON  */
+    /* ledState = {#, #, #}                  */
+    /* ledPins = {D8, D9, D10}               */
+    /* rxPins = {D7(Pin6), D6(Pin5), D3(Pin2)}  */
+    /* txPins = {D2(Pin1), D4(Pin3), D5(Pin4)}  */
+
+  lcd.clear();
+  lcd.setCursor(0, 0);                //(COL, ROW)
+  lcd.print("Did you connect the ");
+  lcd.setCursor(0, 1);
+  lcd.print("loopback with LED");
+  lcd.setCursor(0, 2);
+  lcd.print("& 2-pin conv cable?");
+  lcd.setCursor(3, 3);
+  lcd.print("1: Yes | 2: No");
+  userResponse = processKeypad(); // Process user input
+  userResponseInt = atoi(userResponse); // Converts string from keypad into integer
+  if(userResponseInt == 1)
+  {
+    lcd.clear();
+    lcd.setCursor(0, 1);
+    lcd.print("All cables connected");
+    lcd.setCursor(0, 2);
+    lcd.print("Checking..");
+    delay(1500);
+  }
+  else if(userResponseInt == 2)
+  {
+    lcd.clear();
+    lcd.setCursor(0, 1);
+    lcd.print("Ayy! connect all cables");
+    delay(1500);
+    lcd.setCursor(0, 2);
+    lcd.print("Restarting again");
+    delay(3000);
+    asm volatile("jmp 0"); //Soft restart
+  }
+  else
+  {
+    lcd.clear();
+    lcd.setCursor(0, 1);
+    lcd.print("You should read my");
+    lcd.setCursor(0, 2);
+    lcd.print("INSTRUCTIONS");
+    delay(1500);
+    lcd.setCursor(0, 2);
+    lcd.print("Restarting again");
+    delay(3000);
+    asm volatile("jmp 0"); //Soft restart
+  }
+  delay(2500);
+    /* Array of LED state -- 0: OFF | 1: ON  */
+    /* ledState = {#, #, #}                  */
+    /* ledPins = {D8, D9, D10}               */
+    /* rxPins = {D7(Pin6), NC(Pin5), NC(Pin2)}  */
+    /* txPins = {D2(Pin1), NC(Pin3), NC(Pin4)}  */
+  
+  //Read if RX PINs are HIGH - Turn the LEDs ON
+  for (int i = 0; i < 3; i++)
+  {
+    if (digitalRead(rxPins[i]) == HIGH) // Pins 7, 6, 3 
+    {
+      digitalWrite(ledPins[i], HIGH); // Pins 8, 9, 10 
+      delay(1000);
+    }
+    else
+    {
+    digitalWrite(ledPins[i], LOW); // Pins 8, 9, 10
+    delay(500);
+    }
+  }
+  delay(50);
+  memset(ledState, 0, sizeof(ledState)); // Zero out all elements
+
+  for (int i = 0; i < 3; i++){
+    if (digitalRead(ledPins[i]) == HIGH)
+    {
+      ledState[i] = 1;
+      delay(50);
+    }
+    else
+    {
+    ledState[i] = 0;
+    delay(50);
+    }
+  }
+
+  if (ledState[0] == 1 && ledState[1] == 0 && ledState[2] == 0) {
+  lcd.clear();
+  lcd.setCursor(0, 1);                    //(COL, ROW)
+  lcd.print("All 2 pins are");
+  lcd.setCursor(0, 2);                    //(COL, ROW)
+  lcd.print("CONNECTED!");
+  lcd.setCursor(0, 3);
+  lcd.print("Gosh, finally!");
+  delay(4000);
+  asm volatile("jmp 0"); //Soft restart
+  } 
+  else 
+  {
+    lcd.clear();
+    lcd.setCursor(0, 1);
+    lcd.print("Check your cable");
+    lcd.setCursor(0, 2);
+    lcd.print("Wires must be "); 
+    lcd.setCursor(0, 3);
+    lcd.print("switched");
+    delay(4000);
+    asm volatile("jmp 0"); //Soft restart
+  }
+  
+}
+
 #endif
